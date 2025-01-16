@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +35,11 @@ public class JpaDenominationResult {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @OneToMany(mappedBy = "denominationResult")
+    @OneToMany(mappedBy = "denominationResult", fetch = FetchType.LAZY)
+    @SQLRestriction("calculation_type = 'DENOMINATION'")
     private List<JpaDenominationPart> denomination;
+
+    @OneToMany(mappedBy = "denominationResult", fetch = FetchType.LAZY)
+    @SQLRestriction("calculation_type = 'DIFFERENCE'")
+    private List<JpaDenominationPart> difference;
 }

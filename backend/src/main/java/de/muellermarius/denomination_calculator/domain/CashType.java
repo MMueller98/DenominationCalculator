@@ -1,5 +1,8 @@
 package de.muellermarius.denomination_calculator.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+
 public enum CashType {
     TWO_HUNDRED_EURO(20000, Currency.EURO_CENT, "200€"),
     ONE_HUNDRED_EURO(10000, Currency.EURO_CENT, "100€"),
@@ -16,26 +19,20 @@ public enum CashType {
     TWO_CENT(2, Currency.EURO_CENT, "0,02€"),
     ONE_CENT(1, Currency.EURO_CENT, "0,01€");
 
+    @Getter
     private final long value;
     private final Currency currency;
-    private final String name;
+    private final String displayName;
 
 
-    CashType(final long value, final Currency currency, final String name) {
+    CashType(final long value, final Currency currency, final String displayName) {
         this.value = value;
         this.currency = currency;
-        this.name = name;
+        this.displayName = displayName;
     }
 
-    public long getValue() {
-        return value;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public String getName() {
-        return name;
+    @JsonValue
+    public String getDisplayName() {
+        return displayName;
     }
 }

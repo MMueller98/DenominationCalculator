@@ -76,7 +76,8 @@ public class DenominationCalculatorService {
     ) {
 
         final Optional<List<DenominationPart>> previousDenominationCalculation = denominationPersistenceService
-                .getPreviousDenominationCalculation(userId);
+                .getPreviousDenominationResult(userId)
+                .map(DenominationResult::denomination);
 
         return previousDenominationCalculation
                 .map(previousCalculation -> calculateDifference(currentCalculation, previousCalculation));

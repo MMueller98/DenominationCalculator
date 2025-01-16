@@ -1,11 +1,13 @@
 package de.muellermarius.denomination_calculator.service;
 
+import de.muellermarius.denomination_calculator.domain.CalculationType;
 import de.muellermarius.denomination_calculator.domain.DenominationPart;
 import de.muellermarius.denomination_calculator.domain.DenominationResult;
 import de.muellermarius.denomination_calculator.modell.JpaDenominationPart;
 import de.muellermarius.denomination_calculator.modell.JpaDenominationResult;
 import de.muellermarius.denomination_calculator.repository.DenominationPartRepository;
 import de.muellermarius.denomination_calculator.repository.DenominationRepository;
+import de.muellermarius.denomination_calculator.translation.DenominationJpaToDomainTranslation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,52 +19,46 @@ public class DenominationPersistenceService {
     private final DenominationRepository denominationRepository;
     private final DenominationPartRepository denominationPartRepository;
 
+    private final DenominationJpaToDomainTranslation translation;
+
     public DenominationPersistenceService(
             final DenominationRepository denominationRepository,
-            final DenominationPartRepository denominationPartRepository
+            final DenominationPartRepository denominationPartRepository, DenominationJpaToDomainTranslation translation
     ) {
         this.denominationRepository = denominationRepository;
         this.denominationPartRepository = denominationPartRepository;
+        this.translation = translation;
     }
 
     public void saveDenominationResult(final DenominationResult denominationResult, final String userId) {
-        final JpaDenominationResult jpaDenominationResult = translateToPersistenceEntity(denominationResult, userId);
+        final JpaDenominationResult jpaDenominationResult = translation.translateToPersistenceEntity(denominationResult, userId);
         final JpaDenominationResult saved = denominationRepository.save(jpaDenominationResult);
 
-        final List<JpaDenominationPart> jpaDenominationParts = denominationResult.denomination()
+        final List<JpaDenominationPart> denominationParts = denominationResult.denomination()
                 .stream()
-                .map(domainEntity -> translateToPersistenceEntity(domainEntity, saved))
+                .map(domainEntity -> translation.translateToPersistenceEntity(domainEntity, saved, CalculationType.DENOMINATION))
                 .toList();
-        denominationPartRepository.saveAll(jpaDenominationParts);
+        final List<JpaDenominationPart> differenceParts = denominationResult.difference()
+                .map(list -> list.stream()
+                    .map(domainEntity -> translation.translateToPersistenceEntity(domainEntity, saved, CalculationType.DIFFERENCE))
+                        .toList()
+                ).orElse(List.of());
+
+        denominationPartRepository.saveAll(denominationParts);
+        denominationPartRepository.saveAll(differenceParts);
     }
 
-    public Optional<List<DenominationPart>> getPreviousDenominationCalculation(final String userId) {
+    public Optional<DenominationResult> getPreviousDenominationResult(final String userId) {
         return denominationRepository
-                .findFirstByUserIdOrderByCreatedAtDesc(userId)
-                .map(JpaDenominationResult::getDenomination)
-                .map(denomination -> denomination.stream().map(this::translateToDomainEntity).toList());
+            .findFirstByUserIdOrderByCreatedAtDesc(userId)
+            .map(translation::translateToDomainEntity);
     }
 
-    private JpaDenominationResult translateToPersistenceEntity(final DenominationResult denominationResult, final String userId) {
-        return JpaDenominationResult.builder()
-                .userId(userId)
-                .amount(denominationResult.amount())
-                .currency(denominationResult.currency())
-                .build();
-    }
-
-    private JpaDenominationPart translateToPersistenceEntity(final DenominationPart denominationPart, final JpaDenominationResult denominationResult) {
-        return JpaDenominationPart.builder()
-                .amount(denominationPart.amount())
-                .cashType(denominationPart.cashType())
-                .denominationResult(denominationResult)
-                .build();
-    }
-
-    private DenominationPart translateToDomainEntity(final JpaDenominationPart jpaDenominationPart) {
-        return DenominationPart.builder()
-                .amount(jpaDenominationPart.getAmount())
-                .cashType(jpaDenominationPart.getCashType())
-                .build();
+    public List<DenominationResult> getPreviousDenominationResults(final String userId, final int limit) {
+        return denominationRepository
+                .findFirstTwoByUserIdOrderByCreatedAtDesc(userId, limit)
+                .stream()
+                .map(translation::translateToDomainEntity)
+                .toList();
     }
 }
