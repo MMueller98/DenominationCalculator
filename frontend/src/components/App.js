@@ -13,15 +13,8 @@ function App() {
 
     return (
         <div className="App">
-            <h1>Hello World!</h1>
-            <br/>
-            <h1>Token:</h1>
-            <p>{userToken}</p>
-            <br/>
+            <h1>Denomination Calculator</h1>
             <UserInput callback={setInputValue} />
-            <br/>
-            <p>User Input: {inputValue}</p>
-            <br/>
             <Denomination userToken={userToken} userInputValue={inputValue}/>
         </div>
     );

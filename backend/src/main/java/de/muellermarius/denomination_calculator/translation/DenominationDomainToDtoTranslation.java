@@ -1,35 +1,44 @@
 package de.muellermarius.denomination_calculator.translation;
 
 import de.muellermarius.denomination_calculator.domain.Currency;
+import de.muellermarius.denomination_calculator.domain.Denomination;
 import de.muellermarius.denomination_calculator.domain.DenominationPart;
-import de.muellermarius.denomination_calculator.domain.DenominationResult;
-import de.muellermarius.denomination_calculator.dto.DenominationPartResponse;
+import de.muellermarius.denomination_calculator.dto.DtoDenomination;
+import de.muellermarius.denomination_calculator.dto.DtoDenominationPart;
 import de.muellermarius.denomination_calculator.dto.DenominationResponse;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DenominationDomainToDtoTranslation {
 
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,##0.00");
-
-    public DenominationResponse toDto(final DenominationResult denominationResult) {
+    public DenominationResponse toDto(
+            final Denomination denomination,
+            final Optional<Denomination> previousDenomination,
+            final Optional<List<DenominationPart>> difference
+    ) {
         return DenominationResponse.builder()
-                .value(converToEuroString(denominationResult.amount()))
-                .currency(Currency.EURO)
-                .denomination(denominationResult.denomination().stream().map(this::denominationPartToDto).toList())
-                .difference(denominationResult.difference()
-                                    .map(list -> list.stream().map(this::denominationPartToDto).toList())
-                                    .orElse(null))
+                .denomination(denominationToDto(denomination))
+                .previousDenomination(previousDenomination.map(this::denominationToDto).orElse(null))
+                .difference(difference.map(list -> list.stream().map(this::denominationPartToDto).toList()).orElse(null))
                 .build();
     }
 
-    public DenominationPartResponse denominationPartToDto(final DenominationPart denominationPartResponse) {
-        return DenominationPartResponse.builder()
-                .amount(denominationPartResponse.amount())
-                .cashType(denominationPartResponse.cashType())
+    public DtoDenomination denominationToDto(final Denomination denomination) {
+        return DtoDenomination.builder()
+                .value(converToEuroString(denomination.value()))
+                .currency(Currency.EURO)
+                .denominationParts(denomination.denominationParts().stream().map(this::denominationPartToDto).toList())
+                .build();
+    }
+
+    public DtoDenominationPart denominationPartToDto(final DenominationPart denominationPart) {
+        return DtoDenominationPart.builder()
+                .amount(denominationPart.amount())
+                .cashType(denominationPart.cashType())
                 .build();
     }
 

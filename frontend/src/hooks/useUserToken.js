@@ -4,6 +4,7 @@ import {getUserToken} from "../api/userApi";
 const useUserToken = (tokenCallback) => {
     useEffect(() => {
         const getToken = async () => {
+            console.log(`useUserToken Hook called!`)
             let userToken = localStorage.getItem("X-User-Token");
 
             if (userToken) {

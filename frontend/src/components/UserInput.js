@@ -1,8 +1,9 @@
 import {useState} from "react";
+import "../styles/UserInput.css"
 
 const UserInput = ({ callback }) => {
     const inputId = "numberInput"
-    const [inputValue, setInputValue] = useState(0);
+    const [inputValue, setInputValue] = useState();
 
     const handleInputChange = (event) => {
         setInputValue(event.target.value)
@@ -22,21 +23,19 @@ const UserInput = ({ callback }) => {
     };
 
     return (
-        <div>
-            <h2>Zahlen-Eingabe</h2>
-            <div>
+        <div class="input-container">
+            <div class="input-wrapper">
                 <input
                     id={inputId}
+                    class="number-input"
                     type="number"
                     value={inputValue}
                     onChange={handleInputChange}
-                    placeholder="Geben Sie eine Zahl ein"
-                    step="0.01" // Erlaubt Eingaben mit bis zu zwei Nachkommastellen
-                    min="0" // Stellt sicher, dass nur Werte >= 0 erlaubt sind
+                    placeholder="Enter an amount of money"
+                    step="0.01"
+                    min="0"
                 />
-                <button onClick={handleSubmit}>
-                    Abschicken
-                </button>
+                <button class="submit-button" onClick={handleSubmit}>Submit</button>
             </div>
         </div>
     );

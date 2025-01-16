@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.io.Serializable;
 
 @Builder
-public record DenominationPartResponse(
+public record DtoDenominationPart(
         long amount,
         CashType cashType
 ) implements Serializable {}

@@ -50,7 +50,7 @@ const Denomination = ({ userToken, userInputValue }) => {
     }
 
     return (
-        <DenominationResultTable denominationResult={denominationResult}/>
+        <DenominationResultTable denominationResponse={denominationResult}/>
     );
 }
 

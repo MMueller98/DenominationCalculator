@@ -1,58 +1,68 @@
 import "../styles/DenominationResultTable.css"
 
-const DenominationResultTable = ({ denominationResult }) => {
-    const inputValue = denominationResult?.amount;
-    const denomination = denominationResult?.denomination;
-    const difference = denominationResult?.difference;
+const DenominationResultTable = ({denominationResponse}) => {
+    const denomination = denominationResponse?.denomination;
+    const denominationParts = denomination?.denominationParts;
+    const inputValue = denomination?.value;
+
+    const previousDenomination = denominationResponse?.previousDenomination;
+    const previousInputValue = previousDenomination?.value;
+    const difference = denominationResponse?.difference;
+
+    console.log(`Send Help!`)
+    console.log(denominationResponse)
 
     return (
         <>
-            {denomination?.length > 0 ? (
+            {denomination ? (
                 <>
-                <h2>Denomination of {inputValue}</h2>
                 <div className="table-container">
-
-                    {/* Denomination Table */}
-                    <table className="styled-table">
-                        <thead>
-                        <tr>
-                            <th>CashType</th>
-                            <th>Amount</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            denomination.map((entry, index) => (
-                                <tr key={index}>
-                                    <td>{entry.cashType}</td>
-                                    <td>{entry.amount}</td>
-                                </tr>
-                            ))
-                        }
-                        </tbody>
-                    </table>
-
-                    {/* Difference Table */}
-                    {difference?.length > 0 ? (
+                    <div>
+                        <h2>Denomination of {inputValue}</h2>
                         <table className="styled-table">
                             <thead>
                             <tr>
                                 <th>CashType</th>
-                                <th>Difference</th>
+                                <th>Amount</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {
-                                denomination.map((entry, index) => (
-                                    <tr key={index}>
-                                        <td>{entry.cashType}</td>
-                                        <td>{entry.amount}</td>
-                                    </tr>
-                                ))
-                            }
+                                {
+                                    denominationParts
+                                        .filter(entry => entry.amount !== 0) // Filtert Einträge mit amount = 0 heraus
+                                        .map((entry, index) => (
+                                            <tr key={index}>
+                                                <td>{entry.cashType}</td>
+                                                <td>{entry.amount}</td>
+                                            </tr>
+                                        ))
+                                }
                             </tbody>
                         </table>
-                    ) : null}
+                    </div>
+
+                {previousDenomination ? (
+                    <div>
+                        <h2>Difference to {previousInputValue}</h2>
+                            <table className="styled-table">
+                                <thead>
+                                <tr>
+                                    <th>CashType</th>
+                                    <th>Difference</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {
+                                    difference.map((entry, index) => (
+                                        <tr key={index}>
+                                            <td>{entry.cashType}</td>
+                                            <td>{entry.amount}</td>
+                                        </tr>
+                                    ))
+                                }
+                                </tbody>
+                            </table>
+                    </div>) : null}
                 </div>
                 </>
             ) : null}

@@ -3,7 +3,7 @@ import axios from "axios";
 const BASE_PATH = "http://localhost:8080/v1/denomination";
 
 const calculateDenomination = async (userToken, userInputValue) => {
-    console.log(`Calculate with: Token ${userToken} and value ${userInputValue}`)
+    console.log(`denominationApi.calculateDenomination: Calculate with: Token ${userToken} and value ${userInputValue}`)
     if (!userToken) {
         throw new Error("InvalidInput to calculateDenomination: UserToken is not defined!");
     }
@@ -29,7 +29,7 @@ const calculateDenomination = async (userToken, userInputValue) => {
 }
 
 const fetchPreviousCalculation = async (userToken) => {
-    console.log(`Find previous calculation for token ${userToken}`)
+    console.log(`denominationApi.fetchPreviousCalculation(): Find previous calculation for token ${userToken}`)
     if (!userToken) {
         throw new Error("InvalidInput to fetchPreviousCalculation: UserToken is not defined!");
     }

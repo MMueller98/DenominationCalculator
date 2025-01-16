@@ -1,6 +1,6 @@
 package de.muellermarius.denomination_calculator.service;
 
-import de.muellermarius.denomination_calculator.domain.DenominationResult;
+import de.muellermarius.denomination_calculator.domain.Denomination;
 import de.muellermarius.denomination_calculator.domain.CashType;
 import de.muellermarius.denomination_calculator.domain.Currency;
 import de.muellermarius.denomination_calculator.domain.DenominationPart;
@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class DenominationCalculatorService {
+public class DenominationService {
 
     private static final List<CashType> CASH_TYPES;
 
@@ -23,31 +23,26 @@ public class DenominationCalculatorService {
     private final DenominationPersistenceService denominationPersistenceService;
 
     @Autowired
-    public DenominationCalculatorService(final DenominationPersistenceService denominationPersistenceService) {
+    public DenominationService(final DenominationPersistenceService denominationPersistenceService) {
         this.denominationPersistenceService = denominationPersistenceService;
     }
 
-    public DenominationResult calculateDenominationAndDifference(
+    public Denomination calculateDenomination(
             final long amount,
             final Currency currency,
             final String userId
     ) {
         final List<DenominationPart> currentCalculation = calculateMinimumDenominationParts(amount);
-        final Optional<List<DenominationPart>> difference = calculateDifferenceToPreviousCalculation(
-                userId,
-                currentCalculation
-        );
 
-        final DenominationResult denominationResult = DenominationResult.builder()
-                .amount(amount)
+        final Denomination denomination = Denomination.builder()
+                .value(amount)
                 .currency(currency)
-                .denomination(currentCalculation)
-                .difference(difference)
+                .denominationParts(currentCalculation)
                 .build();
 
-        denominationPersistenceService.saveDenominationResult(denominationResult, userId);
+        denominationPersistenceService.saveDenominationResult(denomination, userId);
 
-        return denominationResult;
+        return denomination;
     }
 
     // Greedy Algorithm to find minimum number of cash (banknotes and coins)
@@ -70,27 +65,14 @@ public class DenominationCalculatorService {
         return denomination;
     }
 
-    private Optional<List<DenominationPart>> calculateDifferenceToPreviousCalculation(
-            final String userId,
-            final List<DenominationPart> currentCalculation
+    public List<DenominationPart> calculateDifference(
+            final Denomination currentDenomination,
+            final Denomination previousDenomination
     ) {
-
-        final Optional<List<DenominationPart>> previousDenominationCalculation = denominationPersistenceService
-                .getPreviousDenominationResult(userId)
-                .map(DenominationResult::denomination);
-
-        return previousDenominationCalculation
-                .map(previousCalculation -> calculateDifference(currentCalculation, previousCalculation));
-    }
-
-    private List<DenominationPart> calculateDifference(
-            final List<DenominationPart> currentCalculation,
-            final List<DenominationPart> previousCalculation
-    ) {
-        final Map<CashType, Long> currentCalculationMap = currentCalculation.stream()
+        final Map<CashType, Long> currentCalculationMap = currentDenomination.denominationParts().stream()
                 .collect(Collectors.groupingBy(DenominationPart::cashType, Collectors.summingLong(DenominationPart::amount)));
 
-        final Map<CashType, Long> previousCalculationMap = previousCalculation.stream()
+        final Map<CashType, Long> previousCalculationMap = previousDenomination.denominationParts().stream()
                 .collect(Collectors.groupingBy(DenominationPart::cashType, Collectors.summingLong(DenominationPart::amount)));
 
         final List<DenominationPart> difference = new ArrayList<>();
@@ -109,5 +91,4 @@ public class DenominationCalculatorService {
 
         return difference;
     }
-
 }
