@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,11 +25,14 @@ public class JpaDenominationResult {
 
     private String userId;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     private long amount;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @OneToMany(mappedBy = "denominationId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "denominationResult")
     private List<JpaDenominationPart> denomination;
 }

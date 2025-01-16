@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface DenominationRepository extends JpaRepository<JpaDenominationResult, Long> {
-    Optional<JpaDenominationResult> findByUserId(String userId);
+    Optional<JpaDenominationResult> findFirstByUserIdOrderByCreatedAtDesc(String userId);
 }

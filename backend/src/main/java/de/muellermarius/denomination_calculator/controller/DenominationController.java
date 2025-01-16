@@ -37,6 +37,7 @@ public class DenominationController {
     }
 
     private long convertToEuroCent(final double value, final Currency currency) {
+        // illegal argument exception if negative
         return currency == Currency.EURO_CENT ? (long) value : Math.round(value * 100);
     }
 }

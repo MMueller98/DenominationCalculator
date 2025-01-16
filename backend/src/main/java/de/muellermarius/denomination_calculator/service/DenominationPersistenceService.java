@@ -38,7 +38,7 @@ public class DenominationPersistenceService {
 
     public Optional<List<DenominationPart>> getPreviousDenominationCalculation(final String userId) {
         return denominationRepository
-                .findByUserId(userId)
+                .findFirstByUserIdOrderByCreatedAtDesc(userId)
                 .map(JpaDenominationResult::getDenomination)
                 .map(denomination -> denomination.stream().map(this::translateToDomainEntity).toList());
     }

@@ -24,7 +24,7 @@ public class JpaDenominationPart {
     @Enumerated(EnumType.STRING)
     private CashType cashType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "denominationId")
     private JpaDenominationResult denominationResult;
 }
