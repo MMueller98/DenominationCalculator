@@ -1,6 +1,5 @@
 package de.muellermarius.denomination_calculator.modell;
 
-import de.muellermarius.denomination_calculator.domain.CalculationType;
 import de.muellermarius.denomination_calculator.domain.CashType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,10 +23,6 @@ public class JpaDenominationPart {
 
     @Enumerated(EnumType.STRING)
     private CashType cashType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "calculation_type")
-    private CalculationType calculationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "denominationId")
