@@ -1,21 +1,40 @@
-import {useEffect, useState} from "react";
+import {use, useEffect, useRef, useState} from "react";
 import "../styles/App.css";
-import useUserToken from "../hooks/useUserToken";
+
+import { getPreviousDenominations, getUserToken } from "../services/CalculationService";
+import DenominationResultTable from "./DenominationResultTable";
 import UserInput from "./UserInput";
-import Denomination from "./Denomination";
-import {getUserToken} from "../api/userApi";
+import CalculationOption from "./CalculationOption";
 
 function App() {
-    const [userToken, setUserToken] = useState("")
-    const [inputValue, setInputValue] = useState();
+    const isInitialRendering = useRef(true);
+    const [userToken, setUserToken] = useState(null)
+    const [useBackend, setUseBackend] = useState(true);
+    const [denominationResponse, setDenominationResponse] = useState(null)
 
-    useUserToken(setUserToken);
+    useEffect(() => {
+        if (!userToken) {
+            getUserToken(setUserToken);
+        }
+    }, [])
+    
+    useEffect(() => {
+        if (!isInitialRendering.current && userToken) {
+            console.log(`User Token changed to ${userToken}`)
+            getPreviousDenominations(userToken, setDenominationResponse)
+        }
+
+        isInitialRendering.current = false;
+    }, [userToken])
 
     return (
         <div className="App">
             <h1>Denomination Calculator</h1>
-            <UserInput callback={setInputValue} />
-            <Denomination userToken={userToken} userInputValue={inputValue}/>
+            <p>User Token: {userToken}</p>
+            <p>Use Backend: {useBackend ? "true" : "false"}</p>
+            <CalculationOption useBackend={useBackend} setUseBackend={setUseBackend}/>
+            <UserInput userToken={userToken} useBackend={useBackend} callback={setDenominationResponse}/>
+            <DenominationResultTable denominationResponse={denominationResponse} />
         </div>
     );
 }

@@ -1,25 +1,14 @@
-import {useEffect, useState} from "react";
-import {getUserToken} from "../api/userApi";
+import { useState, useEffect } from "react";
+import { getUserToken } from "../services/CalculationService";
 
-const useUserToken = (tokenCallback) => {
+export const useUserToken = () => {
+    const [userToken, setUserToken] = useState(null);
+
     useEffect(() => {
-        const getToken = async () => {
-            console.log(`useUserToken Hook called!`)
-            let userToken = localStorage.getItem("X-User-Token");
-
-            if (userToken) {
-                console.log(`Token found in LocalStorage: ${userToken}`);
-            } else {
-                userToken = await getUserToken();
-                console.log(`Token not found in LocalStorage. Fetched Token: ${userToken}`);
-                localStorage.setItem("X-User-Token", userToken);
-            }
-
-            tokenCallback(userToken);
+        if (!userToken) {
+            getUserToken(setUserToken);
         }
+    }, [userToken]);
 
-        getToken();
-    }, [])
+    return userToken;
 }
-
-export default useUserToken

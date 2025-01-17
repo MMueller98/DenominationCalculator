@@ -1,6 +1,10 @@
+import React from "react"
 import "../styles/DenominationResultTable.css"
 
-const DenominationResultTable = ({denominationResponse}) => {
+const DenominationResultTable = React.memo(({denominationResponse}) => {
+    console.log("Render DenominationResultTable")
+    console.log(denominationResponse)
+
     const denomination = denominationResponse?.denomination;
     const denominationParts = denomination?.denominationParts;
     const inputValue = denomination?.value;
@@ -9,8 +13,6 @@ const DenominationResultTable = ({denominationResponse}) => {
     const previousInputValue = previousDenomination?.value;
     const difference = denominationResponse?.difference;
 
-    console.log(`Send Help!`)
-    console.log(denominationResponse)
 
     return (
         <>
@@ -53,12 +55,14 @@ const DenominationResultTable = ({denominationResponse}) => {
                                 </thead>
                                 <tbody>
                                 {
-                                    difference.map((entry, index) => (
-                                        <tr key={index}>
-                                            <td>{entry.cashType}</td>
-                                            <td>{entry.amount}</td>
-                                        </tr>
-                                    ))
+                                    difference
+                                        .filter(entry => entry.amount !== 0)
+                                        .map((entry, index) => (
+                                            <tr key={index}>
+                                                <td>{entry.cashType}</td>
+                                                <td>{entry.amount}</td>
+                                            </tr>
+                                        ))
                                 }
                                 </tbody>
                             </table>
@@ -68,6 +72,6 @@ const DenominationResultTable = ({denominationResponse}) => {
             ) : null}
         </>
     );
-}
+})
 
 export default DenominationResultTable;
