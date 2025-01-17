@@ -1,0 +1,36 @@
+.calculation-option-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.heading {
+    font-size: 22px;
+    font-family: Arial, sans-serif;
+    margin-bottom: 20px;
+}
+
+.calculation-option-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+}
+
+.calculation-option {
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+}
+
+.calculation-input {
+    margin-right: 10px;
+}
+
+.calculation-option:hover {
+    color: #009879;
+}
+
+.calculation-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 151, 121, 0.5);
+}
