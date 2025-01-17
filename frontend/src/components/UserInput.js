@@ -27,7 +27,7 @@ const UserInput = ({ userToken, useBackend, callback }) => {
                     className="number-input"
                     type="number"
                     onChange={handleInputChange}
-                    placeholder="Enter an amount of money"
+                    placeholder="Enter an amount of money in €"
                     step="0.01"
                     min="0.01"
                 />
