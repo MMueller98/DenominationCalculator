@@ -8,7 +8,6 @@ import de.muellermarius.denomination_calculator.dto.DenominationRequest;
 import de.muellermarius.denomination_calculator.dto.DenominationResponse;
 import de.muellermarius.denomination_calculator.dto.DtoDenomination;
 import de.muellermarius.denomination_calculator.service.DenominationService;
-import de.muellermarius.denomination_calculator.service.DenominationPersistenceService;
 
 import de.muellermarius.denomination_calculator.translation.DenominationDomainToDtoTranslation;
 
@@ -24,87 +23,80 @@ import java.util.Optional;
 public class DenominationController {
 
     private final DenominationService denominationService;
-    private final DenominationPersistenceService denominationPersistenceService;
-
     private final DenominationDomainToDtoTranslation denominationDomainToDtoTranslation;
 
     public DenominationController(
             final DenominationService denominationService,
-            final DenominationPersistenceService denominationPersistenceService,
             final DenominationDomainToDtoTranslation denominationDomainToDtoTranslation
     ) {
         this.denominationService = denominationService;
-        this.denominationPersistenceService = denominationPersistenceService;
         this.denominationDomainToDtoTranslation = denominationDomainToDtoTranslation;
     }
 
     @PostMapping("/calculate")
-    public DenominationResponse calculateDenomination(
+    public ResponseEntity<DenominationResponse> calculateDenomination(
             @RequestHeader("X-User-Token") final String userToken,
             @RequestBody final DenominationRequest denominationRequest
     ) {
-        final Optional<Denomination> previousDenomination = denominationPersistenceService.getPreviousDenomination(userToken);
-
         final long euroCentValue = convertToEuroCent(denominationRequest.value(), denominationRequest.currency());
-        final Denomination denomination = denominationService.calculateDenomination(
-                euroCentValue,
-                Currency.EURO_CENT,
-                userToken
-        );
 
-        final Optional<List<DenominationPart>> difference = previousDenomination.map(previous -> denominationService.calculateDifference(denomination, previous));
+        final Optional<Denomination> previousDenomination = denominationService
+            .getPreviousDenomination(userToken);
 
-        return denominationDomainToDtoTranslation.toDto(denomination, previousDenomination, difference);
+        final Denomination denomination = denominationService
+            .calculateDenomination(euroCentValue, Currency.EURO_CENT, userToken);
+
+        final Optional<List<DenominationPart>> difference = denominationService
+            .calculateDifference(denomination, previousDenomination);
+
+        return ResponseEntity.ok(denominationDomainToDtoTranslation.toDto(denomination, previousDenomination, difference));
     }
 
     @GetMapping("/last-calculation")
-    public DenominationResponse getLastCalculations(
+    public ResponseEntity<DenominationResponse> getLastCalculations(
         @RequestHeader("X-User-Token") final String userToken
     ) {
-        final List<Denomination> userDenominations = denominationPersistenceService.getPreviousDenominations(userToken, 2);
+        final List<Denomination> userDenominations = denominationService.getPreviousTwoDenominations(userToken);
+
         DenominationResponse denominationResponse;
 
         if (userDenominations.isEmpty()) {
-            denominationResponse = null;
-        } else if (userDenominations.size() == 1) {
+            return ResponseEntity.noContent().build();
+        }
+
+        if (userDenominations.size() == 1) {
             denominationResponse = denominationDomainToDtoTranslation.toDto(userDenominations.getFirst(), Optional.empty(), Optional.empty());
         } else {
             final Denomination currentDenomination = userDenominations.getFirst();
             final Denomination previousDenomination = userDenominations.get(1);
-            final List<DenominationPart> difference = denominationService.calculateDifference(
-                    currentDenomination,
-                    previousDenomination
-            );
-
+            final List<DenominationPart> difference = denominationService.calculateDifference(currentDenomination, previousDenomination);
             denominationResponse = denominationDomainToDtoTranslation.toDto(currentDenomination, Optional.of(previousDenomination), Optional.of(difference));
         }
 
-        return denominationResponse;
+        return ResponseEntity.ok(denominationResponse);
     }
 
 
     @GetMapping("/last-denomination")
-    public DtoDenomination getLastDenomination(
+    public ResponseEntity<DtoDenomination> getLastDenomination(
         @RequestHeader("X-User-Token") final String userToken
     ) {
-        return denominationPersistenceService
+        return denominationService
             .getPreviousDenomination(userToken)
             .map(denominationDomainToDtoTranslation::denominationToDto)
-            .orElse(DtoDenomination.builder().build());
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.noContent().build());
     }
 
     @PostMapping("/persist")
-    public DenominationCreateResponse persistDenomination(
+    public ResponseEntity<DenominationCreateResponse> persistDenomination(
         @RequestHeader("X-User-Token") final String userToken,
         @RequestBody final DtoDenomination dtoDenomination
     ) {
-
         final Denomination denomination = denominationDomainToDtoTranslation.denominationToDomain(dtoDenomination);
-        final LocalDateTime createdAt = denominationPersistenceService.saveDenominationResult(denomination, userToken);
+        final LocalDateTime createdAt = denominationService.persistDenomination(denomination, userToken);
 
-        return DenominationCreateResponse.builder()
-            .createdAt(createdAt)
-            .build();
+        return ResponseEntity.ok(denominationDomainToDtoTranslation.toDto(createdAt));
     }
 
 

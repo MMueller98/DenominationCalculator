@@ -3,12 +3,14 @@ package de.muellermarius.denomination_calculator.translation;
 import de.muellermarius.denomination_calculator.domain.Currency;
 import de.muellermarius.denomination_calculator.domain.Denomination;
 import de.muellermarius.denomination_calculator.domain.DenominationPart;
+import de.muellermarius.denomination_calculator.dto.DenominationCreateResponse;
 import de.muellermarius.denomination_calculator.dto.DtoDenomination;
 import de.muellermarius.denomination_calculator.dto.DtoDenominationPart;
 import de.muellermarius.denomination_calculator.dto.DenominationResponse;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,12 @@ public class DenominationDomainToDtoTranslation {
                 .previousDenomination(previousDenomination.map(this::denominationToDto).orElse(null))
                 .difference(difference.map(list -> list.stream().map(this::denominationPartToDto).toList()).orElse(null))
                 .build();
+    }
+
+    public DenominationCreateResponse toDto(final LocalDateTime createdAt) {
+        return DenominationCreateResponse.builder()
+            .createdAt(createdAt)
+            .build();
     }
 
     public DtoDenomination denominationToDto(final Denomination denomination) {

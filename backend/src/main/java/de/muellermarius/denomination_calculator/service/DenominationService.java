@@ -7,8 +7,8 @@ import de.muellermarius.denomination_calculator.domain.DenominationPart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DenominationService {
@@ -20,10 +20,15 @@ public class DenominationService {
         CASH_TYPES.sort(Comparator.comparingLong(CashType::getValue).reversed());
     }
 
+    private final CalculationService calculationService;
     private final DenominationPersistenceService denominationPersistenceService;
 
     @Autowired
-    public DenominationService(final DenominationPersistenceService denominationPersistenceService) {
+    public DenominationService(
+        final CalculationService calculationService,
+        final DenominationPersistenceService denominationPersistenceService
+    ) {
+        this.calculationService = calculationService;
         this.denominationPersistenceService = denominationPersistenceService;
     }
 
@@ -32,7 +37,8 @@ public class DenominationService {
             final Currency currency,
             final String userId
     ) {
-        final List<DenominationPart> currentCalculation = calculateMinimumDenominationParts(amount);
+        final List<DenominationPart> currentCalculation = calculationService
+            .calculateMinimumDenominationParts(amount);
 
         final Denomination denomination = Denomination.builder()
                 .value(amount)
@@ -45,54 +51,29 @@ public class DenominationService {
         return denomination;
     }
 
-    // Greedy Algorithm to find minimum number of cash (banknotes and coins)
-    private List<DenominationPart> calculateMinimumDenominationParts(long amount) {
-        List<DenominationPart> denomination = new ArrayList<>();
-
-        // Loop over all types off cash
-        for (CashType cashType : CASH_TYPES) {
-            final long value = cashType.getValue();
-            int count = 0;
-
-            while (amount >= value) {
-                count++;
-                amount -= value;
-            }
-
-            denomination.add(new DenominationPart(count, cashType));
-        }
-
-        return denomination;
+    public Optional<List<DenominationPart>> calculateDifference(
+        final Denomination currentDenomination,
+        final Optional<Denomination> previousDenomination
+    ) {
+        return previousDenomination.map(previous -> calculateDifference(currentDenomination, previous));
     }
 
     public List<DenominationPart> calculateDifference(
             final Denomination currentDenomination,
             final Denomination previousDenomination
     ) {
-        final Map<CashType, Long> currentCalculationMap = currentDenomination.denominationParts().stream()
-                .collect(Collectors.groupingBy(DenominationPart::cashType, Collectors.summingLong(DenominationPart::amount)));
+        return calculationService.calculateDifference(currentDenomination, previousDenomination);
+    }
 
-        final Map<CashType, Long> previousCalculationMap = previousDenomination.denominationParts().stream()
-                .collect(Collectors.groupingBy(DenominationPart::cashType, Collectors.summingLong(DenominationPart::amount)));
+    public Optional<Denomination> getPreviousDenomination(final String userToken) {
+        return denominationPersistenceService.getPreviousDenomination(userToken);
+    }
 
-        final List<DenominationPart> difference = new ArrayList<>();
+    public List<Denomination> getPreviousTwoDenominations(final String userToken) {
+        return denominationPersistenceService.getPreviousDenominations(userToken, 2);
+    }
 
-        for (CashType cashType : CashType.values()) {
-            final Long current = currentCalculationMap.getOrDefault(cashType, 0L);
-            final Long previous = previousCalculationMap.getOrDefault(cashType, 0L);
-
-            if (current.equals(0L) && previous.equals(0L)) {
-                continue;
-            }
-
-            final DenominationPart denominationPart = DenominationPart.builder()
-                    .amount(current - previous)
-                    .cashType(cashType)
-                    .build();
-
-            difference.add(denominationPart);
-        }
-
-        return difference;
+    public LocalDateTime persistDenomination(final Denomination denomination, final String userToken) {
+        return denominationPersistenceService.saveDenominationResult(denomination, userToken);
     }
 }
