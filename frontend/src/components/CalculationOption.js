@@ -2,12 +2,11 @@ import "../styles/CalculationOption.css"
 
 const CalculationOption = ({useBackend, setUseBackend}) => {
     const handleOptionChange = (event) => {
-        console.log(`handleOptionChange: ${event.target.value}`)
-        setUseBackend(event.target.value === "backend" ? true : false);
+        setUseBackend(event.target.value === "backend");
     };
     return (
         <div class="calculation-option-container">
-            <h2 class="heading">Choose CalculationOption</h2>
+            <h2 class="heading">Choose Calculation Option:</h2>
             <div class="calculation-option-wrapper">
                 <label class="calculation-option">
                     <input

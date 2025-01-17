@@ -1,16 +1,16 @@
 .table-container {
     display: flex;
-    justify-content: center; /* Standardmäßig zentrieren */
-    gap: 70px; /* Abstand zwischen den Tabellen */
-    flex-wrap: wrap; /* Erlaubt Zeilenumbruch bei zu wenig Platz */
-    margin: 5%;
+    justify-content: center;
+    gap: 70px;
+    flex-wrap: wrap;
+    margin: 3% 5% 5%;
 }
 
 .styled-table {
-    width: auto; /* Standardbreite automatisch */
-    max-width: 600px; /* Maximale Breite der Tabelle */
-    min-width: 300px; /* Mindestbreite der Tabelle */
-    flex: 1; /* Gleiche Verteilung bei zwei Tabellen */
+    width: auto;
+    max-width: 600px;
+    min-width: 300px;
+    flex: 1;
     border-collapse: collapse;
     font-size: 16px;
     font-family: Arial, sans-serif;

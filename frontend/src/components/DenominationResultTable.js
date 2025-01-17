@@ -2,9 +2,6 @@ import React from "react"
 import "../styles/DenominationResultTable.css"
 
 const DenominationResultTable = React.memo(({denominationResponse}) => {
-    console.log("Render DenominationResultTable")
-    console.log(denominationResponse)
-
     const denomination = denominationResponse?.denomination;
     const denominationParts = denomination?.denominationParts;
     const inputValue = denomination?.value;
@@ -12,7 +9,6 @@ const DenominationResultTable = React.memo(({denominationResponse}) => {
     const previousDenomination = denominationResponse?.previousDenomination;
     const previousInputValue = previousDenomination?.value;
     const difference = denominationResponse?.difference;
-
 
     return (
         <>

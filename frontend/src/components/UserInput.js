@@ -17,10 +17,6 @@ const UserInput = ({ userToken, useBackend, callback }) => {
         } else {
             inputElement.reportValidity();
         }
-
-        console.log(`Check validity: ${inputElement.checkValidity()}`)
-        console.log("Submit")
-        console.log(`Number: ${inputValue}`)
     };
 
     return (

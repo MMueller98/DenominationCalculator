@@ -8,16 +8,11 @@ export const calculateDenominationResponse = (userToken, userInputValue, previou
 
     const difference = calculateDifference(denomination, previousDenomination);
 
-    const response = {
+    return {
         "denomination": denomination,
         "previousDenomination": previousDenomination,
         "difference": difference
     }
-
-    console.log("Response ready")
-    console.log(response)
-
-    return response;
 }
 
 const calculateMinimumDenominationParts = (userInputValue) => {
@@ -36,9 +31,6 @@ const calculateMinimumDenominationParts = (userInputValue) => {
 
         denominationParts.push(createDenominationParts(count, cashType.displayName))
     });
-
-    console.log(`Finished`)
-    console.log(denominationParts)
 
     return denominationParts;
 }
@@ -59,22 +51,13 @@ const calculateDifference = (denomination, previousDenomination) => {
         const previousDenominationPart = extraDenominationPartByCashType(previousDenomination, cashType);
         const previousAmount = parseInt(previousDenominationPart?.amount);
 
-        console.log("hilfe")
-        console.log(extraDenominationPartByCashType(denomination, cashType)?.amount)
-        console.log(isNaN(extraDenominationPartByCashType(denomination, cashType)?.amount))
-        //console.log(currentDenominationPart)
-
         if (isNaN(currentAmount) || isNaN(previousAmount)) {
-            console.log("NAN")
             return;
         }
         if (currentAmount === 0 && previousAmount === 0) {
-            console.log("Not 0")
             return;
         }
 
-
-        console.log(`Difference: ${currentAmount} - ${previousAmount}`);
         const amount = currentAmount - previousAmount;
         difference.push(createDenominationParts(amount, cashType.displayName))
     });

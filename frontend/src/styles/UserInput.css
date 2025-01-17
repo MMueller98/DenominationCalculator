@@ -1,7 +1,6 @@
-/* Container für die Eingabe und den Button */
 .input-container {
-    text-align: center; /* Zentriert den gesamten Container */
-    margin-top: 70px;
+    text-align: center;
+    margin-top: 40px;
 }
 
 .heading {
@@ -13,21 +12,20 @@
 .input-wrapper {
     display: flex;
     justify-content: center;
-    gap: 10px; /* Abstand zwischen Input und Button */
+    gap: 10px;
     align-items: center;
 }
 
-/* Stil für das Input-Feld */
 .number-input {
     padding: 12px 15px;
     font-size: 16px;
     border: 2px solid #cccccc;
-    border-radius: 8px; /* Abgerundete Ecken */
+    border-radius: 8px;
     width: 250px;
     min-width: 200px;
-    outline: none; /* Entfernt den Standardrahmen */
-    transition: all 0.3s ease; /* Sanfte Übergänge für Hover und Focus */
-    background-color: #fafafa; /* Helles Grau als Hintergrund */
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
 }
 
 .number-input:focus {

@@ -1,11 +1,10 @@
-/* Container für die Berechnungsoptionen */
 .calculation-option-container {
-    text-align: center; /* Zentriert den gesamten Container */
+    text-align: center;
     margin-bottom: 30px;
 }
 
 .heading {
-    font-size: 24px;
+    font-size: 22px;
     font-family: Arial, sans-serif;
     margin-bottom: 20px;
 }
@@ -13,29 +12,25 @@
 .calculation-option-wrapper {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Abstand zwischen den Optionen */
+    gap: 20px;
     align-items: center;
 }
 
-/* Stil für das Label der Berechnungsoptionen */
 .calculation-option {
     font-size: 18px;
     font-family: Arial, sans-serif;
     cursor: pointer;
 }
 
-/* Stil für das Radio-Button-Input */
 .calculation-input {
-    margin-right: 10px; /* Abstand zwischen Button und Text */
+    margin-right: 10px;
 }
 
-/* Hover-Effekt für das Label */
 .calculation-option:hover {
-    color: #009879; /* Grüne Farbe bei Hover */
+    color: #009879;
 }
 
-/* Stil für den Radio-Button, wenn er fokussiert ist */
 .calculation-input:focus {
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 151, 121, 0.5); /* Fokus-Schatten für Radio-Button */
+    box-shadow: 0 0 5px rgba(0, 151, 121, 0.5);
 }

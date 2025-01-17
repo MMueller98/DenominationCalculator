@@ -29,9 +29,7 @@ function App() {
 
     return (
         <div className="App">
-            <h1>Denomination Calculator</h1>
-            <p>User Token: {userToken}</p>
-            <p>Use Backend: {useBackend ? "true" : "false"}</p>
+            <h1 className="headline">Denomination Calculator</h1>
             <CalculationOption useBackend={useBackend} setUseBackend={setUseBackend}/>
             <UserInput userToken={userToken} useBackend={useBackend} callback={setDenominationResponse}/>
             <DenominationResultTable denominationResponse={denominationResponse} />

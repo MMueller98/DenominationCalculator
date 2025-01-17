@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.headline {
+  font-size: 40px;
+  font-family: Arial, sans-serif;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
