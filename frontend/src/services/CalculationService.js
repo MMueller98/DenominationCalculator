@@ -1,53 +1,103 @@
-import { fetchDenominationFromBackend, fetchPreviousDenominations } from "./DenominationApi";
-import { fetchUserToken } from "./UserApi";
+import {CashTypes} from "../util/CashTypes";
+import {persistDenomination} from "./DenominationApi";
 
-const calculateDenomination = (userToken, userInputValue, callback, calculateInBackend) => {
-    if (calculateInBackend) {
-        console.log(`Calculate in Backend with token ${userToken} and input ${userInputValue}`)
-        calculateDenominationInBackend(userToken, userInputValue, callback);
-    } else {
-        console.log(`Calculate in Frontend with token ${userToken} and input ${userInputValue}`)
-        calculateDenominationInFrontend(userToken, userInputValue, callback)
+export const calculateDenominationResponse = (userToken, userInputValue, previousDenomination) => {
+    const denominationParts = calculateMinimumDenominationParts(userInputValue);
+    const denomination = createDenomination(userInputValue, "EURO", denominationParts);
+    const persistResponse = persistDenomination(denomination, userToken)
+
+    const difference = calculateDifference(denomination, previousDenomination);
+
+    const response = {
+        "denomination": denomination,
+        "previousDenomination": previousDenomination,
+        "difference": difference
+    }
+
+    console.log("Response ready")
+    console.log(response)
+
+    return response;
+}
+
+const calculateMinimumDenominationParts = (userInputValue) => {
+    const denominationParts = [];
+    let euroCentValue = Math.round(userInputValue * 100);
+    console.log(`calculateMinimumDenominationParts: ${userInputValue} -> ${euroCentValue}`)
+
+    Object.values(CashTypes).forEach((cashType) => {
+        const cashTypeValue = cashType.value;
+        let count = 0;
+
+        while (euroCentValue >= cashTypeValue) {
+            count += 1;
+            euroCentValue -= cashTypeValue;
+        }
+
+        denominationParts.push(createDenominationParts(count, cashType.displayName))
+    });
+
+    console.log(`Finished`)
+    console.log(denominationParts)
+
+    return denominationParts;
+}
+
+const calculateDifference = (denomination, previousDenomination) => {
+    if (!denomination) {
+        throw new Error("...")
+    }
+    if (!previousDenomination) {
+        return null;
+    }
+
+    const difference = [];
+
+    Object.values(CashTypes).forEach((cashType) => {
+        const currentDenominationPart = extraDenominationPartByCashType(denomination, cashType);
+        const currentAmount = parseInt(currentDenominationPart?.amount);
+        const previousDenominationPart = extraDenominationPartByCashType(previousDenomination, cashType);
+        const previousAmount = parseInt(previousDenominationPart?.amount);
+
+        console.log("hilfe")
+        console.log(extraDenominationPartByCashType(denomination, cashType)?.amount)
+        console.log(isNaN(extraDenominationPartByCashType(denomination, cashType)?.amount))
+        //console.log(currentDenominationPart)
+
+        if (isNaN(currentAmount) || isNaN(previousAmount)) {
+            console.log("NAN")
+            return;
+        }
+        if (currentAmount === 0 && previousAmount === 0) {
+            console.log("Not 0")
+            return;
+        }
+
+
+        console.log(`Difference: ${currentAmount} - ${previousAmount}`);
+        const amount = currentAmount - previousAmount;
+        difference.push(createDenominationParts(amount, cashType.displayName))
+    });
+
+
+    return difference;
+}
+
+const createDenomination = (value, currency, denominationParts) => {
+    return {
+        "value": value,
+        "currency": currency,
+        "denominationParts": denominationParts
     }
 }
 
-const calculateDenominationInBackend = async (userToken, userInputValue, callback) => {
-    try {
-        const response = await fetchDenominationFromBackend(userToken, userInputValue)
-        console.log(response)
-        callback(response)
-    } catch (error) {
-        console.error(`Error in calculate: ${error.message}`)
+const createDenominationParts = (amount, cashType) => {
+    return {
+        "amount": amount,
+        "cashType": cashType
     }
 }
 
-const calculateDenominationInFrontend = (userToken, userInputValue, callback) => {
-    console.log(`Calculate in Frontend!`)
+const extraDenominationPartByCashType = (denomination, cashType) => {
+    return denomination?.denominationParts?.find((part) => part.cashType === cashType?.displayName);
 }
-
-const getUserToken = async (callback) => {
-    let userToken = localStorage.getItem("X-User-Token");
-
-    if (userToken) {
-        console.log(`Token found in LocalStorage: ${userToken}`);
-    } else {
-        userToken = await fetchUserToken();
-        console.log(`Token not found in LocalStorage. Fetched Token: ${userToken}`);
-        localStorage.setItem("X-User-Token", userToken);
-    }
-
-    callback(userToken)
-}
-
-const getPreviousDenominations = async (userToken, callback) => {
-    try {
-        const response = await fetchPreviousDenominations(userToken)
-        console.log(response)
-        callback(response)
-    } catch (error) {
-        console.error(`Error in calculate: ${error.message}`)
-    }
-}
-
-
-export {calculateDenomination, getPreviousDenominations, getUserToken}

@@ -81,6 +81,10 @@ public class DenominationService {
             final Long current = currentCalculationMap.getOrDefault(cashType, 0L);
             final Long previous = previousCalculationMap.getOrDefault(cashType, 0L);
 
+            if (current.equals(0L) && previous.equals(0L)) {
+                continue;
+            }
+
             final DenominationPart denominationPart = DenominationPart.builder()
                     .amount(current - previous)
                     .cashType(cashType)

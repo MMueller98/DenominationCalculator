@@ -8,6 +8,7 @@ import de.muellermarius.denomination_calculator.repository.DenominationRepositor
 import de.muellermarius.denomination_calculator.translation.DenominationJpaToDomainTranslation;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class DenominationPersistenceService {
         this.translation = translation;
     }
 
-    public void saveDenominationResult(final Denomination denomination, final String userId) {
+    public LocalDateTime saveDenominationResult(final Denomination denomination, final String userId) {
         final JpaDenomination jpaDenomination = denominationRepository.save(
                 translation.translateToPersistenceEntity(denomination, userId)
         );
@@ -39,6 +40,8 @@ public class DenominationPersistenceService {
                 .toList();
 
         denominationPartRepository.saveAll(denominationParts);
+
+        return jpaDenomination.getCreatedAt();
     }
 
     public Optional<Denomination> getPreviousDenomination(final String userId) {

@@ -42,6 +42,30 @@ public class DenominationDomainToDtoTranslation {
                 .build();
     }
 
+    public Denomination denominationToDomain(final DtoDenomination dtoDenomination) {
+        final long euroCentValue = new BigDecimal(dtoDenomination.value())
+            .movePointRight(2)
+            .longValue();
+
+        System.out.println("EuroCent Value of " + dtoDenomination.value() + ": " + euroCentValue);
+
+        return Denomination.builder()
+            .value(euroCentValue)
+            .currency(dtoDenomination.currency())
+            .denominationParts(dtoDenomination.denominationParts()
+                .stream()
+                .map(this::denominationPartToDomain)
+                .toList())
+            .build();
+    }
+
+    public DenominationPart denominationPartToDomain(final DtoDenominationPart denominationPart) {
+        return DenominationPart.builder()
+            .amount(denominationPart.amount())
+            .cashType(denominationPart.cashType())
+            .build();
+    }
+
     private String converToEuroString(final long value) {
         return new BigDecimal(value).movePointLeft(2).toString();
     }

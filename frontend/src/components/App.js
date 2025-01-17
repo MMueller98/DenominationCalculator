@@ -1,7 +1,7 @@
-import {use, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import "../styles/App.css";
 
-import { getPreviousDenominations, getUserToken } from "../services/CalculationService";
+import { getPreviousDenominations, getUserToken } from "../services/DenominationService";
 import DenominationResultTable from "./DenominationResultTable";
 import UserInput from "./UserInput";
 import CalculationOption from "./CalculationOption";

@@ -3,14 +3,19 @@ package de.muellermarius.denomination_calculator.controller;
 import de.muellermarius.denomination_calculator.domain.Denomination;
 import de.muellermarius.denomination_calculator.domain.Currency;
 import de.muellermarius.denomination_calculator.domain.DenominationPart;
+import de.muellermarius.denomination_calculator.dto.DenominationCreateResponse;
 import de.muellermarius.denomination_calculator.dto.DenominationRequest;
 import de.muellermarius.denomination_calculator.dto.DenominationResponse;
+import de.muellermarius.denomination_calculator.dto.DtoDenomination;
 import de.muellermarius.denomination_calculator.service.DenominationService;
 import de.muellermarius.denomination_calculator.service.DenominationPersistenceService;
 
 import de.muellermarius.denomination_calculator.translation.DenominationDomainToDtoTranslation;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +81,32 @@ public class DenominationController {
 
         return denominationResponse;
     }
+
+
+    @GetMapping("/last-denomination")
+    public DtoDenomination getLastDenomination(
+        @RequestHeader("X-User-Token") final String userToken
+    ) {
+        return denominationPersistenceService
+            .getPreviousDenomination(userToken)
+            .map(denominationDomainToDtoTranslation::denominationToDto)
+            .orElse(DtoDenomination.builder().build());
+    }
+
+    @PostMapping("/persist")
+    public DenominationCreateResponse persistDenomination(
+        @RequestHeader("X-User-Token") final String userToken,
+        @RequestBody final DtoDenomination dtoDenomination
+    ) {
+
+        final Denomination denomination = denominationDomainToDtoTranslation.denominationToDomain(dtoDenomination);
+        final LocalDateTime createdAt = denominationPersistenceService.saveDenominationResult(denomination, userToken);
+
+        return DenominationCreateResponse.builder()
+            .createdAt(createdAt)
+            .build();
+    }
+
 
     private long convertToEuroCent(final double value, final Currency currency) {
         return currency == Currency.EURO_CENT ? (long) value : Math.round(value * 100);

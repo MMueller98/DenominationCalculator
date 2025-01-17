@@ -43,7 +43,7 @@ const DenominationResultTable = React.memo(({denominationResponse}) => {
                         </table>
                     </div>
 
-                {previousDenomination ? (
+                {difference?.length ? (
                     <div>
                         <h2>Difference to {previousInputValue}</h2>
                             <table className="styled-table">
@@ -56,7 +56,6 @@ const DenominationResultTable = React.memo(({denominationResponse}) => {
                                 <tbody>
                                 {
                                     difference
-                                        .filter(entry => entry.amount !== 0)
                                         .map((entry, index) => (
                                             <tr key={index}>
                                                 <td>{entry.cashType}</td>

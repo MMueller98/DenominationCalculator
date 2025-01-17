@@ -1,6 +1,6 @@
 import {useState} from "react";
 import "../styles/UserInput.css"
-import { calculateDenomination } from "../services/CalculationService";
+import { calculateDenomination } from "../services/DenominationService";
 
 const UserInput = ({ userToken, useBackend, callback }) => {
     const inputId = "numberInput"
@@ -33,7 +33,7 @@ const UserInput = ({ userToken, useBackend, callback }) => {
                     onChange={handleInputChange}
                     placeholder="Enter an amount of money"
                     step="0.01"
-                    min="0"
+                    min="0.01"
                 />
                 <button className="submit-button" onClick={handleSubmit}>Submit</button>
             </div>
