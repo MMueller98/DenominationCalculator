@@ -15,7 +15,6 @@ import de.muellermarius.denomination_calculator.domain.Currency;
 import de.muellermarius.denomination_calculator.domain.Denomination;
 import de.muellermarius.denomination_calculator.domain.DenominationPart;
 
-@Disabled
 public class CalculationServiceTest {
 
     final CalculationService underTest = new CalculationService();
@@ -78,7 +77,7 @@ public class CalculationServiceTest {
             DenominationPart.builder().cashType(CashType.ONE_EURO).amount(0).build(),
             DenominationPart.builder().cashType(CashType.FIFTY_CENT).amount(0).build(),
             DenominationPart.builder().cashType(CashType.TWENTY_CENT).amount(1).build(),
-            DenominationPart.builder().cashType(CashType.TEN_CENT).amount(0).build(),
+            DenominationPart.builder().cashType(CashType.TEN_CENT).amount(1).build(),
             DenominationPart.builder().cashType(CashType.FIVE_CENT).amount(0).build(),
             DenominationPart.builder().cashType(CashType.TWO_CENT).amount(1).build(),
             DenominationPart.builder().cashType(CashType.ONE_CENT).amount(0).build()
