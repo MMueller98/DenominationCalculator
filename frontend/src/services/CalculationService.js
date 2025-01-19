@@ -18,7 +18,6 @@ export const calculateDenominationResponse = (userToken, userInputValue, previou
 const calculateMinimumDenominationParts = (userInputValue) => {
     const denominationParts = [];
     let euroCentValue = Math.round(userInputValue * 100);
-    console.log(`calculateMinimumDenominationParts: ${userInputValue} -> ${euroCentValue}`)
 
     Object.values(CashTypes).forEach((cashType) => {
         const cashTypeValue = cashType.value;
@@ -36,9 +35,6 @@ const calculateMinimumDenominationParts = (userInputValue) => {
 }
 
 const calculateDifference = (denomination, previousDenomination) => {
-    if (!denomination) {
-        throw new Error("...")
-    }
     if (!previousDenomination) {
         return null;
     }
