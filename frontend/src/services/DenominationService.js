@@ -32,9 +32,14 @@ const getUserToken = async (callback) => {
     if (userToken) {
         console.log(`Token found in LocalStorage: ${userToken}`);
     } else {
-        userToken = await fetchUserToken();
-        console.log(`Token not found in LocalStorage. Fetched Token: ${userToken}`);
-        localStorage.setItem("X-User-Token", userToken);
+        try {
+            userToken = await fetchUserToken();
+            console.log(`Token not found in LocalStorage. Fetched Token: ${userToken}`);
+            localStorage.setItem("X-User-Token", userToken);
+        } catch(error) {
+            console.error(`Error while fetching UserToken: ${error}`)
+        }
+
     }
 
     callback(userToken)

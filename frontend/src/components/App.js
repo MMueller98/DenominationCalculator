@@ -20,7 +20,6 @@ function App() {
     
     useEffect(() => {
         if (!isInitialRendering.current && userToken) {
-            console.log(`User Token changed to ${userToken}`)
             getPreviousDenominations(userToken, setDenominationResponse)
         }
 

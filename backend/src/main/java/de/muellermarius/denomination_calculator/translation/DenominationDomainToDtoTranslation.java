@@ -55,8 +55,6 @@ public class DenominationDomainToDtoTranslation {
             .movePointRight(2)
             .longValue();
 
-        System.out.println("EuroCent Value of " + dtoDenomination.value() + ": " + euroCentValue);
-
         return Denomination.builder()
             .value(euroCentValue)
             .currency(dtoDenomination.currency())

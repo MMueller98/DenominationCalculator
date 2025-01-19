@@ -1,6 +1,20 @@
 import React from "react"
 import "../styles/DenominationResultTable.css"
 
+const convertDifferenceDisplayValue = (value) => {
+    let displayValue;
+
+    if (!value || value === 0) {
+        displayValue = "0";
+    } else if(value > 0) {
+        displayValue = "+" + value.toString();
+    } else {
+        displayValue = value.toString();
+    }
+
+    return displayValue;
+}
+
 const DenominationResultTable = React.memo(({denominationResponse}) => {
     const denomination = denominationResponse?.denomination;
     const denominationParts = denomination?.denominationParts;
@@ -55,7 +69,7 @@ const DenominationResultTable = React.memo(({denominationResponse}) => {
                                         .map((entry, index) => (
                                             <tr key={index}>
                                                 <td>{entry.cashType}</td>
-                                                <td>{entry.amount}</td>
+                                                <td>{convertDifferenceDisplayValue(entry.amount)}</td>
                                             </tr>
                                         ))
                                 }

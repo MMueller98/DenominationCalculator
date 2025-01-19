@@ -3,7 +3,6 @@ import axios from "axios";
 const BASE_PATH = "http://localhost:8080/v1/denomination";
 
 const fetchDenominationFromBackend = async (userToken, userInputValue) => {
-    console.log(`denominationApi.calculateDenomination: Calculate with: Token ${userToken} and value ${userInputValue}`)
     if (!userToken) {
         throw new Error("InvalidInput to calculateDenomination: UserToken is not defined!");
     }
@@ -29,7 +28,6 @@ const fetchDenominationFromBackend = async (userToken, userInputValue) => {
 }
 
 const fetchPreviousDenominations = async (userToken) => {
-    console.log(`denominationApi.fetchPreviousCalculation(): Find previous calculation for token ${userToken}`)
     if (!userToken) {
         throw new Error("InvalidInput to fetchPreviousCalculation: UserToken is not defined!");
     }
@@ -41,7 +39,6 @@ const fetchPreviousDenominations = async (userToken) => {
         }
     };
 
-    // TODO: try catch
     const lastCalculationResponse = await axios.get(`${BASE_PATH}/last-calculation`, headers);
 
     return lastCalculationResponse.data;
@@ -68,9 +65,6 @@ const persistDenomination = async (denomination, userToken) => {
             "X-User-Token": userToken
         }
     };
-
-    console.log("persist")
-    console.log(denomination)
 
     const creationResponse = await axios.post(`${BASE_PATH}/persist`, denomination, headers);
     return creationResponse?.data;

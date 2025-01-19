@@ -29,44 +29,41 @@
 }
 
 .number-input:focus {
-    border-color: #009879; /* Farbe bei Fokus */
-    box-shadow: 0 0 8px rgba(0, 151, 121, 0.5); /* Schöner Fokus-Schatten */
-    background-color: #ffffff; /* Hellerer Hintergrund beim Fokussieren */
+    border-color: #009879;
+    box-shadow: 0 0 8px rgba(0, 151, 121, 0.5);
+    background-color: #ffffff;
 }
 
 .number-input:hover {
-    border-color: #007f65; /* Dunklerer Rahmen bei Hover */
-    background-color: #f0f0f0; /* Hellerer Hintergrund bei Hover */
+    border-color: #007f65;
+    background-color: #f0f0f0;
 }
 
-/* Stil für das Input-Feld, wenn es einen Wert enthält */
 .number-input:not(:placeholder-shown) {
-    background-color: #e0f7e0; /* Sanfter grüner Hintergrund, wenn Wert eingegeben ist */
-    border-color: #4caf50; /* Grüne Farbe, wenn Eingabe erfolgt */
+    background-color: #e0f7e0;
+    border-color: #4caf50;
 }
 
-/* Stil für das Input-Feld, wenn es leer ist */
 .number-input:placeholder-shown {
-    background-color: #fafafa; /* Standardhintergrund */
+    background-color: #fafafa;
 }
 
-/* Stil für den Button */
 .submit-button {
     padding: 12px 20px;
     font-size: 16px;
     background-color: #009879;
     color: white;
     border: none;
-    border-radius: 8px; /* Abgerundete Ecken */
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-    background-color: #007f65; /* Dunklerer Grünton bei Hover */
+    background-color: #007f65;
 }
 
 .submit-button:focus {
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 151, 121, 0.5); /* Fokus-Schatten für den Button */
+    box-shadow: 0 0 5px rgba(0, 151, 121, 0.5);
 }
