@@ -66,7 +66,12 @@ const persistDenomination = async (denomination, userToken) => {
         }
     };
 
-    const creationResponse = await axios.post(`${BASE_PATH}/persist`, denomination, headers);
+    let creationResponse;
+    try {
+        await axios.post(`${BASE_PATH}/persist`, denomination, headers);
+    } catch (error) {
+        console.log("Error while persist denomination: " + error)
+    }
     return creationResponse?.data;
 }
 

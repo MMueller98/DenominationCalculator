@@ -30,7 +30,7 @@ const DenominationResultTable = React.memo(({denominationResponse}) => {
                 <>
                 <div className="table-container">
                     <div>
-                        <h2>Denomination of {inputValue}</h2>
+                        <h2>Denomination of {inputValue}€</h2>
                         <table className="styled-table">
                             <thead>
                             <tr>
@@ -55,7 +55,7 @@ const DenominationResultTable = React.memo(({denominationResponse}) => {
 
                 {difference?.length ? (
                     <div>
-                        <h2>Difference to {previousInputValue}</h2>
+                        <h2>Difference to {previousInputValue}€</h2>
                             <table className="styled-table">
                                 <thead>
                                 <tr>

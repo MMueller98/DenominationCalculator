@@ -4,7 +4,12 @@ import {persistDenomination} from "./DenominationApi";
 export const calculateDenominationResponse = (userToken, userInputValue, previousDenomination) => {
     const denominationParts = calculateMinimumDenominationParts(userInputValue);
     const denomination = createDenomination(userInputValue, "EURO", denominationParts);
-    const persistResponse = persistDenomination(denomination, userToken)
+
+    try {
+        const persistResponse = persistDenomination(denomination, userToken)
+    } catch (error) {
+        console.error("Error while persist denomination: " + error)
+    }
 
     const difference = calculateDifference(denomination, previousDenomination);
 

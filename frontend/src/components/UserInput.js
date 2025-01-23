@@ -12,7 +12,7 @@ const UserInput = ({ userToken, useBackend, callback }) => {
 
     const handleSubmit = () => {
         const inputElement = document.getElementById(inputId);
-        if (inputElement.checkValidity()) {
+        if (inputElement.checkValidity() && inputValue) {
             calculateDenomination(userToken, inputValue, callback, useBackend)
         } else {
             inputElement.reportValidity();

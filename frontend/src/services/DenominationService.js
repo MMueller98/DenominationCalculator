@@ -20,7 +20,12 @@ const calculateDenominationInBackend = async (userToken, userInputValue, callbac
 }
 
 const calculateDenominationInFrontend = async (userToken, userInputValue, callback) => {
-    const previousDenomination = await fetchPreviousDenomination(userToken);
+    let previousDenomination;
+    try {
+        previousDenomination = await fetchPreviousDenomination(userToken);
+    } catch (error) {
+        console.error(`Error in calculate: ${error.message}`)
+    }
     const denominationResponse = calculateDenominationResponse(userToken, userInputValue, previousDenomination);
 
     callback(denominationResponse);
