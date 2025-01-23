@@ -11,6 +11,7 @@ import de.muellermarius.denomination_calculator.service.DenominationService;
 
 import de.muellermarius.denomination_calculator.translation.DenominationDomainToDtoTranslation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class DenominationController {
     private final DenominationService denominationService;
     private final DenominationDomainToDtoTranslation denominationDomainToDtoTranslation;
 
+    @Autowired
     public DenominationController(
             final DenominationService denominationService,
             final DenominationDomainToDtoTranslation denominationDomainToDtoTranslation
