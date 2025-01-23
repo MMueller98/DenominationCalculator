@@ -37,7 +37,7 @@ Die Anwendung bietet folgende Kernfunktionen:
   3. Übergabe der Eingabe an einen POST-Endpunkt des Backends.
   4. Backend berechnet die Stückelung und liefert das Ergebnis zurück.
   5. Frontend zeigt das Ergebnis in Tabellenform an und speichert die Stückelung im Speicher.
-  6. Bei erneuter Berechnung vergleicht das Backend die neue Stückelung mit der vorherigen und liefert die Differenz.
+  6. Bei erneuter Berechnung wird die neue Stückelung mit der vorherigen Stückelung verglichen und die Differenz gebildet.
 
 ---
 
